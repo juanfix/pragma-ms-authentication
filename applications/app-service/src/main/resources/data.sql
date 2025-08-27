@@ -1,0 +1,3 @@
+-- INSERT INTO role (name, description) VALUES
+-- ('ADMIN', 'Administrador del sistema'),
+-- ('CLIENT', 'Cliente de la plataforma');
