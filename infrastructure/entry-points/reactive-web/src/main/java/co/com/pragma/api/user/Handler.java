@@ -1,6 +1,8 @@
 package co.com.pragma.api.user;
 
+import co.com.pragma.api.user.dto.create.CreateUserFailResponseDTO;
 import co.com.pragma.api.user.dto.create.CreateUserRequestDTO;
+import co.com.pragma.api.user.dto.create.CreateUserResponseDTO;
 import co.com.pragma.model.user.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -39,13 +41,16 @@ public class Handler {
             ),
             responses = {
                     @ApiResponse(
-                            responseCode = "201",
+                            responseCode = "200",
                             description = "Created",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Map.class)
+                                    schema = @Schema(implementation = CreateUserResponseDTO.class)
                             )
-                    )
+                    ),
+                    @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = CreateUserFailResponseDTO.class)))
             }
     )
     public Mono<ServerResponse> listenSaveUser(ServerRequest serverRequest) {

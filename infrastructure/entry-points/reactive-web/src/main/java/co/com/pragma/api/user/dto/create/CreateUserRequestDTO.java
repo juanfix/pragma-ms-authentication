@@ -17,7 +17,7 @@ public record CreateUserRequestDTO(
             minLength = 2,
             maxLength = 150
     )
-    String lastName,
+    String lastname,
 
     @Schema(
             description = "Birthdate's user",

@@ -11,7 +11,7 @@ public class BaseSalaryValidation implements IUserValidation {
             return Mono.error(new IllegalArgumentException("El campo salario base es requerido."));
         }
         if (user.getBaseSalary() < 0 || user.getBaseSalary() > 15000000) {
-            return Mono.error(new IllegalArgumentException("El campo salario base debe ser un numero entre 0 y 15000000"));
+            return Mono.error(new IllegalArgumentException("El campo salario base debe ser un numero entre 0 y 15000000."));
         }
         return Mono.empty();
     }

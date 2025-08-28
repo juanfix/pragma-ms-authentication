@@ -12,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import javax.naming.Name;
-
 @RequiredArgsConstructor
 public class UserUseCase implements UserUseCaseInterface {
     private final UserRepository userRepository;
@@ -34,8 +32,6 @@ public class UserUseCase implements UserUseCaseInterface {
                             return userRepository.save(userValidated);
                         }).log()
                 );
-
-        //return userRepository.save(user);
     }
 
     public Mono<User> updateUser(User user) {

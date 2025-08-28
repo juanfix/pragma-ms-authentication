@@ -17,17 +17,21 @@ import java.time.LocalDate;
 public class UserEntity {
     @Id
     private Long id;
+    @Column("name")
     private String name;
     @Column("last_name")
     private String lastname;
     @Column("birth_date")
-    private LocalDate birthDate;
+    private LocalDate birthdate;
+    @Column("address")
     private String address;
+    @Column("email")
     private String email;
     @Column("identity_number")
     private String identityNumber;
     @Column("phone_number")
     private String phoneNumber;
+    @Column("base_salary")
     private Long baseSalary;
     @Column("role_id")
     private Long roleId;

@@ -2,6 +2,7 @@ package co.com.pragma.r2dbc.entity;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table("role")
@@ -13,6 +14,8 @@ import org.springframework.data.relational.core.mapping.Table;
 public class RoleEntity {
     @Id
     private Long id;
+    @Column("name")
     private String name;
+    @Column("description")
     private String description;
 }
