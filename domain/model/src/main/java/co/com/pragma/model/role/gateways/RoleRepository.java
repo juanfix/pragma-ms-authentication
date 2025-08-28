@@ -5,9 +5,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface RoleRepository {
-    Mono<Role> saveRole(Role role);
-    Flux<Role> getAllRoles();
-    Mono<Role> getRoleById(Long id);
-    Mono<Role> editRole(Role user);
-    Mono<Void> deleteRole();
+    Mono<Role> save(Role role);
+    Flux<Role> findAll();
+    Mono<Role> findById(Long id);
+    Mono<Role> edit(Role user);
+    Mono<Void> deleteById();
 }

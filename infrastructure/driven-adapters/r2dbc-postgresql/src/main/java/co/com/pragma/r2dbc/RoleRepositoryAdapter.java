@@ -32,28 +32,28 @@ public class RoleRepositoryAdapter extends ReactiveAdapterOperations<
     }
 
     @Override
-    public Mono<Role> saveRole(Role role) {
+    public Mono<Role> save(Role role) {
         return null;
     }
 
     @Override
-    public Flux<Role> getAllRoles() {
+    public Flux<Role> findAll() {
         return null;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Mono<Role> getRoleById(Long id) {
+    public Mono<Role> findById(Long id) {
         return transactionalOperator.execute(status -> super.findById(id)).next();
     }
 
     @Override
-    public Mono<Role> editRole(Role user) {
+    public Mono<Role> edit(Role user) {
         return null;
     }
 
     @Override
-    public Mono<Void> deleteRole() {
+    public Mono<Void> deleteById() {
         return null;
     }
 }

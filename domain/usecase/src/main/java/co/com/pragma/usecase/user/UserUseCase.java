@@ -25,7 +25,7 @@ public class UserUseCase implements UserUseCaseInterface {
                 .includeValidation(new BaseSalaryValidation());
 
         return userValidation.validate(user)
-                .then(roleRepository.getRoleById(user.getRoleId())
+                .then(roleRepository.findById(user.getRoleId())
                         .switchIfEmpty(Mono.error(new IllegalArgumentException("El Id del rol suministrado no existe.")))
                         .flatMap(role -> {
                             User userValidated = user;

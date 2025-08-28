@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import co.com.pragma.usecase.user.UserUseCase;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.config.Task;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RestController
 @Tag(name = "User", description = "User endpoints")
+@Slf4j
 public class Handler {
     private final UserUseCase userUseCase;
 
@@ -55,10 +57,12 @@ public class Handler {
     )
     public Mono<ServerResponse> listenSaveUser(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(User.class)
+                .doOnNext(user -> log.info("📥 Se va a resigtrar el usuario: {}", user))
                 .flatMap(userUseCase::saveUser)
-                .flatMap(savedTask -> ServerResponse.ok()
+                .doOnNext(savedUser -> log.info("✅ usuario almacenado en la base de datos: {}", savedUser))
+                .flatMap(savedUser -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(savedTask));
+                        .bodyValue(savedUser));
     }
 
     public Mono<ServerResponse> listenUpdateUser(ServerRequest serverRequest) {

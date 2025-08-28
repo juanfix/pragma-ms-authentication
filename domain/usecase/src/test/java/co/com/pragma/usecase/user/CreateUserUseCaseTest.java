@@ -40,7 +40,7 @@ class CreateUserUseCaseTest {
 
         when(userRepository.findByEmail("juan@mail.com"))
                 .thenReturn(Mono.empty());
-        when(roleRepository.getRoleById(any()))
+        when(roleRepository.findById(any()))
                 .thenReturn(Mono.just(role));
         when(userRepository.save(user))
                 .thenAnswer(invocation -> {
@@ -77,7 +77,7 @@ class CreateUserUseCaseTest {
 
         when(userRepository.findByIdentityNumber("123456"))
                 .thenReturn(Mono.empty());
-        when(roleRepository.getRoleById(any()))
+        when(roleRepository.findById(any()))
                 .thenReturn(Mono.just(role));
 
         StepVerifier.create(userUseCase.saveUser(user))
@@ -101,7 +101,7 @@ class CreateUserUseCaseTest {
 
         when(userRepository.findByEmail(user.getEmail()))
                 .thenReturn(Mono.empty());
-        when(roleRepository.getRoleById(any()))
+        when(roleRepository.findById(any()))
                 .thenReturn(Mono.empty());
 
         StepVerifier.create(userUseCase.saveUser(user))
