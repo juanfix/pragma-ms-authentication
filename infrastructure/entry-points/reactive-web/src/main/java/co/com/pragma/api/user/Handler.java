@@ -58,15 +58,19 @@ public class Handler {
             }
     )
     public Mono<ServerResponse> listenSaveUser(ServerRequest serverRequest) {
-        String id = serverRequest.pathVariable("id");
-        URI url = UriComponentsBuilder.fromUriString("/api/v1/user{id}").buildAndExpand(id).toUri();
         return serverRequest.bodyToMono(User.class)
-                .doOnNext(user -> log.info("📥 Se va a resigtrar el usuario: {}", user))
+                .doOnNext(user -> log.info("📥 Se va a resistrar el usuario: {}", user))
                 .flatMap(userUseCase::saveUser)
+                .doOnError(ex -> {
+                    log.error("❌ Ocurrió un error en el proceso: {}", ex.getMessage());
+                })
                 .doOnNext(savedUser -> log.info("✅ usuario almacenado en la base de datos: {}", savedUser))
-                .flatMap(savedUser -> ServerResponse.created(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(savedUser));
+                .flatMap(savedUser -> {
+                    URI url = UriComponentsBuilder.fromUriString("/api/v1/user{id}").buildAndExpand(savedUser.getId()).toUri();
+                    return ServerResponse.created(url)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .bodyValue(savedUser);
+                });
     }
 
     public Mono<ServerResponse> listenUpdateUser(ServerRequest serverRequest) {
