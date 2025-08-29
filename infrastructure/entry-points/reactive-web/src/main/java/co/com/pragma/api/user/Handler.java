@@ -20,9 +20,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import reactor.core.publisher.Mono;
 
-import java.util.Map;
+import java.net.URI;
 
 @Component
 @RequiredArgsConstructor
@@ -56,11 +58,13 @@ public class Handler {
             }
     )
     public Mono<ServerResponse> listenSaveUser(ServerRequest serverRequest) {
+        String id = serverRequest.pathVariable("id");
+        URI url = UriComponentsBuilder.fromUriString("/api/v1/user{id}").buildAndExpand(id).toUri();
         return serverRequest.bodyToMono(User.class)
                 .doOnNext(user -> log.info("📥 Se va a resigtrar el usuario: {}", user))
                 .flatMap(userUseCase::saveUser)
                 .doOnNext(savedUser -> log.info("✅ usuario almacenado en la base de datos: {}", savedUser))
-                .flatMap(savedUser -> ServerResponse.ok()
+                .flatMap(savedUser -> ServerResponse.created(url)
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(savedUser));
     }
