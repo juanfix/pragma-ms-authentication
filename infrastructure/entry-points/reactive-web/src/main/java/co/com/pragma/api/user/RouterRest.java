@@ -21,6 +21,7 @@ public class RouterRest {
     @Bean
     public RouterFunction<ServerResponse> routerFunction(Handler handler) {
         return route(POST(globalPath.getGlobal() + "/user"), userHandler::listenSaveUser)
+                .andRoute(POST("/api/v1/user/validate"), handler::listenValidateUser)
                 .andRoute(PUT(globalPath.getGlobal() + "/user/{id}"), userHandler::listenUpdateUser)
                 .andRoute(DELETE(globalPath.getGlobal() + "/user/{id}"), userHandler::listenDeleteUser)
                 .andRoute(GET(globalPath.getGlobal()+ "/user"), userHandler::listenGetAllUser)

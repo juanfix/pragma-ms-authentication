@@ -1,13 +1,13 @@
-package co.com.pragma.usecase.user;
+package co.com.pragma.usecase.user.user;
 
 import co.com.pragma.model.role.gateways.RoleRepository;
 import co.com.pragma.model.user.User;
 import co.com.pragma.model.user.gateways.UserRepository;
-import co.com.pragma.usecase.user.validations.UserValidation;
-import co.com.pragma.usecase.user.validations.cases.BaseSalaryValidation;
-import co.com.pragma.usecase.user.validations.cases.EmailValidation;
-import co.com.pragma.usecase.user.validations.cases.LastnameValidation;
-import co.com.pragma.usecase.user.validations.cases.NameValidation;
+import co.com.pragma.usecase.user.user.validations.UserValidation;
+import co.com.pragma.usecase.user.user.validations.cases.BaseSalaryValidation;
+import co.com.pragma.usecase.user.user.validations.cases.EmailValidation;
+import co.com.pragma.usecase.user.user.validations.cases.LastnameValidation;
+import co.com.pragma.usecase.user.user.validations.cases.NameValidation;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

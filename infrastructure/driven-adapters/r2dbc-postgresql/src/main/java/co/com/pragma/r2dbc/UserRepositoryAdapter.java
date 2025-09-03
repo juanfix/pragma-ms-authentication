@@ -5,6 +5,8 @@ import co.com.pragma.model.user.gateways.UserRepository;
 import co.com.pragma.r2dbc.entity.UserEntity;
 import co.com.pragma.r2dbc.helper.ReactiveAdapterOperations;
 import org.reactivecommons.utils.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.reactive.TransactionalOperator;
@@ -19,6 +21,7 @@ public class UserRepositoryAdapter extends ReactiveAdapterOperations<
     UserReactiveRepository
 > implements UserRepository {
 
+    private static final Logger log = LoggerFactory.getLogger(UserRepositoryAdapter.class);
     private final TransactionalOperator transactionalOperator;
 
     public UserRepositoryAdapter(UserReactiveRepository repository, ObjectMapper mapper, TransactionalOperator transactionalOperator) {
@@ -61,6 +64,21 @@ public class UserRepositoryAdapter extends ReactiveAdapterOperations<
 
         return transactionalOperator.execute(status -> findByExample(user)
                 .switchIfEmpty(Mono.empty())).next();
+    }
+
+    @Override
+    public Mono<User> findByIdentityNumberAndEmail(String identityNumber, String email) {
+        log.info("Searching user by email={} and identity number={}", email, identityNumber);
+
+        User user = new User();
+        user.setIdentityNumber(identityNumber);
+        user.setEmail(email);
+
+        return transactionalOperator.execute(status -> findByExample(user)
+                .switchIfEmpty(Mono.defer(() -> {
+                    log.warn("User with email={} and identity number={} not found", identityNumber, email);
+                    return Mono.empty();
+                }))).next();
     }
 
     @Override

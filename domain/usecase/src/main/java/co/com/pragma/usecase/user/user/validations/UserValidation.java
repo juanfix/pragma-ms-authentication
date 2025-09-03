@@ -1,4 +1,4 @@
-package co.com.pragma.usecase.user.validations;
+package co.com.pragma.usecase.user.user.validations;
 
 import co.com.pragma.model.user.User;
 import reactor.core.publisher.Mono;

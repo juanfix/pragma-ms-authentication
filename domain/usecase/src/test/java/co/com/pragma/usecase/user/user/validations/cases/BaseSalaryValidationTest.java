@@ -1,4 +1,4 @@
-package co.com.pragma.usecase.user.validations.cases;
+package co.com.pragma.usecase.user.user.validations.cases;
 
 import co.com.pragma.model.user.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +23,7 @@ class BaseSalaryValidationTest {
     }
 
     @Test
-    void shouldPassWhenBaseSalaryIsNotBetween0And15000000() {
+    void shouldFailWhenBaseSalaryIsNotBetween0And15000000() {
         User user = User.builder().baseSalary(-25L).build();
 
         StepVerifier.create(baseSalaryValidation.validate(user))

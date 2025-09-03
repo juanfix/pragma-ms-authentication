@@ -1,4 +1,4 @@
-package co.com.pragma.usecase.user.validations.cases;
+package co.com.pragma.usecase.user.user.validations.cases;
 
 import co.com.pragma.model.user.User;
 import co.com.pragma.model.user.gateways.UserRepository;

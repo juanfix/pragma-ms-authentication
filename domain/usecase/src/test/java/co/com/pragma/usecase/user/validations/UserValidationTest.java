@@ -1,6 +1,8 @@
 package co.com.pragma.usecase.user.validations;
 
 import co.com.pragma.model.user.User;
+import co.com.pragma.usecase.user.user.validations.IUserValidation;
+import co.com.pragma.usecase.user.user.validations.UserValidation;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
