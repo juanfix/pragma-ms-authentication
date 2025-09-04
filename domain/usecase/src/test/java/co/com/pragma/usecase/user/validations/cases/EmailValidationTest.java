@@ -1,7 +1,8 @@
-package co.com.pragma.usecase.user.user.validations.cases;
+package co.com.pragma.usecase.user.validations.cases;
 
 import co.com.pragma.model.user.User;
 import co.com.pragma.model.user.gateways.UserRepository;
+import co.com.pragma.usecase.user.user.validations.cases.EmailValidation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
