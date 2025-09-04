@@ -1,4 +1,4 @@
-package co.com.pragma.jwtvalidator;
+package co.com.pragma.jjwtsecurity.jwt.provider;
 
 import lombok.Getter;
 import lombok.Setter;

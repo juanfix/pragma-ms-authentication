@@ -24,3 +24,6 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE INDEX IF NOT EXISTS idx_user_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_user_identity_number ON users(identity_number);
 CREATE INDEX IF NOT EXISTS idx_user_role_id ON users(role_id);
+
+ALTER TABLE users
+ADD COLUMN IF NOT EXISTS password VARCHAR(255) NOT NULL DEFAULT 'password_temporal';

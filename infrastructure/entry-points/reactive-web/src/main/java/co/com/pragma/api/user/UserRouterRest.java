@@ -13,17 +13,17 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 
 @Configuration
 @RequiredArgsConstructor
-public class RouterRest {
+public class UserRouterRest {
 
     private final GlobalPath globalPath;
-    private final Handler userHandler;
+    private final UserHandler userHandler;
 
     @Bean
-    public RouterFunction<ServerResponse> routerFunction(Handler handler) {
+    public RouterFunction<ServerResponse> routerFunction(UserHandler handler) {
         return route(POST(globalPath.getGlobal() + "/user"), userHandler::listenSaveUser)
-                .andRoute(POST("/api/v1/user/validate"), handler::listenValidateUser)
+                .andRoute(POST(globalPath.getGlobal() +"/user/validate"), handler::listenValidateUser)
+                //.andRoute(POST(globalPath.getGlobal() +"/login"), handler::listenLoginUser)
                 .andRoute(PUT(globalPath.getGlobal() + "/user/{id}"), userHandler::listenUpdateUser)
-                .andRoute(DELETE(globalPath.getGlobal() + "/user/{id}"), userHandler::listenDeleteUser)
                 .andRoute(GET(globalPath.getGlobal()+ "/user"), userHandler::listenGetAllUser)
                 .andRoute(GET(globalPath.getGlobal() + "/user/{id}"), userHandler::listenGetUserByIdentityNumber);
     }

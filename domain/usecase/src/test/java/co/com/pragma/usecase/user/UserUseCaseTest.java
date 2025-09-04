@@ -35,6 +35,7 @@ class UserUseCaseTest {
                 .lastname("Ceballos")
                 .email("juan@mail.com")
                 .identityNumber("123456")
+                .password("123456")
                 .baseSalary(3000000L)
                 .build();
 
@@ -163,6 +164,7 @@ class UserUseCaseTest {
                 .lastname("Ceballos")
                 .email("juanmail.com") // Email no correcto
                 .identityNumber("123456")
+                .password("123456")
                 .baseSalary(3000000L)
                 .build();
 
@@ -189,6 +191,7 @@ class UserUseCaseTest {
                 .lastname("Ceballos")
                 .email("juan@mail.com")
                 .identityNumber("123456")
+                .password("123456")
                 .baseSalary(3000000L)
                 .build();
 

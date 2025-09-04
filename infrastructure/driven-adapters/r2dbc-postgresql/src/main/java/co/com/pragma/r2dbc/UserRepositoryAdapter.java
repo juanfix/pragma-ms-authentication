@@ -1,12 +1,17 @@
 package co.com.pragma.r2dbc;
 
+import co.com.pragma.jjwtsecurity.jwt.provider.JwtProvider;
 import co.com.pragma.model.user.User;
+import co.com.pragma.model.user.dto.LoginDTO;
+import co.com.pragma.model.user.dto.TokenDTO;
+import co.com.pragma.model.user.gateways.AuthRepository;
 import co.com.pragma.model.user.gateways.UserRepository;
 import co.com.pragma.r2dbc.entity.UserEntity;
 import co.com.pragma.r2dbc.helper.ReactiveAdapterOperations;
 import org.reactivecommons.utils.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.reactive.TransactionalOperator;
@@ -19,12 +24,20 @@ public class UserRepositoryAdapter extends ReactiveAdapterOperations<
     UserEntity/* change for adapter model */,
     Long,
     UserReactiveRepository
-> implements UserRepository {
-
+> implements UserRepository, AuthRepository {
     private static final Logger log = LoggerFactory.getLogger(UserRepositoryAdapter.class);
     private final TransactionalOperator transactionalOperator;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtProvider jwtProvider;
+    private final RoleRepositoryAdapter roleRepositoryAdapter;
 
-    public UserRepositoryAdapter(UserReactiveRepository repository, ObjectMapper mapper, TransactionalOperator transactionalOperator) {
+    public UserRepositoryAdapter(UserReactiveRepository repository,
+                                 ObjectMapper mapper,
+                                 TransactionalOperator transactionalOperator,
+                                 PasswordEncoder passwordEncoder,
+                                 JwtProvider jwtProvider,
+                                 RoleRepositoryAdapter roleRepositoryAdapter
+    ) {
         /**
          *  Could be use mapper.mapBuilder if your domain model implement builder pattern
          *  super(repository, mapper, d -> mapper.mapBuilder(d,ObjectModel.ObjectModelBuilder.class).build());
@@ -32,12 +45,18 @@ public class UserRepositoryAdapter extends ReactiveAdapterOperations<
          */
         super(repository, mapper, d -> mapper.map(d, User.class));
         this.transactionalOperator = transactionalOperator;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtProvider = jwtProvider;
+        this.roleRepositoryAdapter = roleRepositoryAdapter;
     }
 
     @Override
     @Transactional
     public Mono<User> save(User user) {
-        return transactionalOperator.execute(status -> super.save(user)).next();
+        String encryptedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encryptedPassword);
+        return transactionalOperator.execute(status ->
+                super.save(user)).next();
     }
 
     @Override
@@ -88,8 +107,19 @@ public class UserRepositoryAdapter extends ReactiveAdapterOperations<
     }
 
     @Override
-    @Transactional
-    public Mono<Void> deleteById(Long id) {
-        return transactionalOperator.execute(status -> repository.deleteById(id)).then();
+    public Mono<TokenDTO> login(LoginDTO dto) {
+        User user = new User();
+        user.setEmail(dto.email());
+
+        return transactionalOperator.execute(status -> findByExample(user)
+                .filter(userDocument -> passwordEncoder.matches(dto.password(), userDocument.getPassword()))
+                .flatMap(userDocument ->
+                    roleRepositoryAdapter.findById(userDocument.getRoleId())
+                            .map(role -> {
+                                String roleName = role.getName();
+                                return new TokenDTO(jwtProvider.generateToken(userDocument, roleName));
+                            })
+                )
+                .switchIfEmpty(Mono.error(new IllegalArgumentException("Bad credentials")))).next();
     }
 }

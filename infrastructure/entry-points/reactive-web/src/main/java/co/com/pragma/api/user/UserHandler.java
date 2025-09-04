@@ -1,5 +1,6 @@
 package co.com.pragma.api.user;
 
+import co.com.pragma.api.auth.dto.UnauthorizedDTO;
 import co.com.pragma.api.user.dto.create.CreateUserBRResponseDTO;
 import co.com.pragma.api.user.dto.create.CreateUserFailResponseDTO;
 import co.com.pragma.api.user.dto.create.CreateUserRequestDTO;
@@ -13,11 +14,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.config.Task;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,13 +34,14 @@ import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 @Component
 @RequiredArgsConstructor
 @RestController
 @Tag(name = "User", description = "User endpoints")
 @Slf4j
-public class Handler {
+public class UserHandler {
     private final UserUseCaseInterface userUseCase;
     private final JwtUseCaseInterface jwtUseCase;
 
@@ -62,11 +66,29 @@ public class Handler {
                     @ApiResponse(responseCode = "400", description = "Bad request",
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = CreateUserBRResponseDTO.class))),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = UnauthorizedDTO.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = UnauthorizedDTO.class)
+                            )
+                    ),
                     @ApiResponse(responseCode = "500", description = "Internal Server Error",
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = CreateUserFailResponseDTO.class)))
             }
     )
+    @SecurityRequirement(name = "Authorization")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'ASESOR')")
     public Mono<ServerResponse> listenSaveUser(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(User.class)
                 .doOnNext(user -> log.info("📥 Se va a resistrar el usuario: {}", user))
@@ -112,6 +134,7 @@ public class Handler {
                                     schema = @Schema(implementation = CreateUserFailResponseDTO.class)))
             }
     )
+    @SecurityRequirement(name = "Authorization")
     public Mono<ServerResponse> listenValidateUser(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(ValidateUserRequest.class)
                 .doOnNext(user -> log.info("📥 Se va a validar el usuario: {}", user))
@@ -163,12 +186,5 @@ public class Handler {
                         .contentType(MediaType.TEXT_EVENT_STREAM)
                         .bodyValue(task))
                 .switchIfEmpty(ServerResponse.notFound().build());
-    }
-
-    public Mono<ServerResponse> listenDeleteUser(ServerRequest serverRequest) {
-        Long id = Long.parseLong(serverRequest.pathVariable("id"));
-
-        return userUseCase.deleteUser(id)
-                .then(ServerResponse.noContent().build());
     }
 }

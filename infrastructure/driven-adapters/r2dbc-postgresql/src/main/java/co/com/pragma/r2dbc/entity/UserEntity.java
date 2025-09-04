@@ -1,5 +1,6 @@
 package co.com.pragma.r2dbc.entity;
 
+import co.com.pragma.model.role.Role;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
@@ -29,6 +30,8 @@ public class UserEntity {
     private String email;
     @Column("identity_number")
     private String identityNumber;
+    @Column("password")
+    private String password;
     @Column("phone_number")
     private String phoneNumber;
     @Column("base_salary")
@@ -37,6 +40,6 @@ public class UserEntity {
     private Long roleId;
 
     @Transient
-    private RoleEntity role;
+    private Role role;
 
 }

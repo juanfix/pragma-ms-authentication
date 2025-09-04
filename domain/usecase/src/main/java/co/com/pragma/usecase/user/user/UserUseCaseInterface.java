@@ -9,5 +9,4 @@ public interface UserUseCaseInterface {
     public Mono<User> updateUser(User user);
     public Flux<User> getAllUsers();
     public Mono<User> getUserByIdentityNumber(String identityNumber);
-    public Mono<Void> deleteUser(Long id);
 }

@@ -4,10 +4,7 @@ import co.com.pragma.model.role.gateways.RoleRepository;
 import co.com.pragma.model.user.User;
 import co.com.pragma.model.user.gateways.UserRepository;
 import co.com.pragma.usecase.user.user.validations.UserValidation;
-import co.com.pragma.usecase.user.user.validations.cases.BaseSalaryValidation;
-import co.com.pragma.usecase.user.user.validations.cases.EmailValidation;
-import co.com.pragma.usecase.user.user.validations.cases.LastnameValidation;
-import co.com.pragma.usecase.user.user.validations.cases.NameValidation;
+import co.com.pragma.usecase.user.user.validations.cases.*;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -21,6 +18,7 @@ public class UserUseCase implements UserUseCaseInterface {
         UserValidation userValidation = new UserValidation()
                 .includeValidation(new NameValidation())
                 .includeValidation(new LastnameValidation())
+                .includeValidation(new PasswordValidation())
                 .includeValidation(new EmailValidation(userRepository))
                 .includeValidation(new BaseSalaryValidation());
 
@@ -44,10 +42,6 @@ public class UserUseCase implements UserUseCaseInterface {
 
     public Mono<User> getUserByIdentityNumber(String identityNumber) {
         return userRepository.findByIdentityNumber(identityNumber);
-    }
-
-    public Mono<Void> deleteUser(Long id) {
-        return userRepository.deleteById(id);
     }
 
 }
