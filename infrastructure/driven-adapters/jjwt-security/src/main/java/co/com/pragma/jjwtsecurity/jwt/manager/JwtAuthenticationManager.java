@@ -47,7 +47,7 @@ public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
 
     private List<SimpleGrantedAuthority> extractAuthorities(Object rolesClaim) {
         if (rolesClaim == null) {
-            return List.of(new SimpleGrantedAuthority("ROLE_CLIENT"));
+            return List.of(new SimpleGrantedAuthority("CLIENTE"));
         }
 
         // Si es una lista de Strings
@@ -56,35 +56,22 @@ public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
                 return ((List<?>) rolesClaim).stream()
                         .filter(Objects::nonNull)
                         .map(Object::toString) // Convertir cada elemento a String
-                        .map(role -> {
-                            // Asegurar que el rol tenga el prefijo ROLE_ si es necesario
-                            if (!role.startsWith("ROLE_")) {
-                                return "ROLE_" + role;
-                            }
-                            return role;
-                        })
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
             } catch (Exception e) {
                 System.err.println("Error processing roles list: " + e.getMessage());
-                return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+                return List.of(new SimpleGrantedAuthority("CLIENTE"));
             }
         }
 
         // Si es un String individual
         if (rolesClaim instanceof String) {
             String role = (String) rolesClaim;
-            if (!role.startsWith("ROLE_")) {
-                role = "ROLE_" + role;
-            }
             return List.of(new SimpleGrantedAuthority(role));
         }
 
         // Para cualquier otro tipo, convertirlo a String
         String role = rolesClaim.toString();
-        if (!role.startsWith("ROLE_")) {
-            role = "ROLE_" + role;
-        }
         return List.of(new SimpleGrantedAuthority(role));
     }
 }
