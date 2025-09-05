@@ -2,6 +2,7 @@ package co.com.pragma.usecase.user.jwt;
 
 import co.com.pragma.model.user.User;
 import co.com.pragma.model.user.gateways.UserRepository;
+import co.com.pragma.usecase.user.user.validations.error.UserValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
@@ -81,7 +82,7 @@ class JwtUseCaseTest {
         when(iJwtValidation.validate(jwt)).thenReturn(Mono.just(false));
 
         StepVerifier.create(jwtUseCase.isValidUser(jwt, document, email))
-                .expectErrorMatches(throwable -> throwable instanceof IllegalArgumentException &&
+                .expectErrorMatches(throwable -> throwable instanceof UserValidationException &&
                         throwable.getMessage().equals("Invalid token"))
                 .verify();
     }

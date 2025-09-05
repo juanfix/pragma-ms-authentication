@@ -5,6 +5,7 @@ import co.com.pragma.api.user.dto.create.CreateUserFailResponseDTO;
 import co.com.pragma.model.user.dto.LoginDTO;
 import co.com.pragma.model.user.dto.TokenDTO;
 import co.com.pragma.usecase.user.user.LoginUseCaseInterface;
+import co.com.pragma.usecase.user.user.validations.error.UserValidationException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -75,7 +76,7 @@ public class AuthHandler {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .bodyValue(resp))
                 )
-                .onErrorResume(IllegalArgumentException.class, e -> {
+                .onErrorResume(UserValidationException.class, e -> {
                     log.warn("Error de credenciales: {}", e.getMessage());
                     Map<String, Object> errorResponse = new HashMap<>();
                     errorResponse.put("timestamp", LocalDateTime.now().toString());

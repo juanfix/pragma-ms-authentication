@@ -3,6 +3,7 @@ package co.com.pragma.usecase.user.validations.cases;
 import co.com.pragma.model.user.User;
 import co.com.pragma.model.user.gateways.UserRepository;
 import co.com.pragma.usecase.user.user.validations.cases.EmailValidation;
+import co.com.pragma.usecase.user.user.validations.error.UserValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
@@ -26,7 +27,7 @@ class EmailValidationTest {
         User user = User.builder().email("").build();
 
         StepVerifier.create(emailValidation.validate(user))
-                .expectErrorMatches(e -> e instanceof IllegalArgumentException &&
+                .expectErrorMatches(e -> e instanceof UserValidationException &&
                         e.getMessage().contains("El campo email es obligatorio."))
                 .verify();
     }
@@ -36,7 +37,7 @@ class EmailValidationTest {
         User user = User.builder().email(null).build();
 
         StepVerifier.create(emailValidation.validate(user))
-                .expectErrorMatches(e -> e instanceof IllegalArgumentException &&
+                .expectErrorMatches(e -> e instanceof UserValidationException &&
                         e.getMessage().contains("El campo email es obligatorio."))
                 .verify();
     }
@@ -46,7 +47,7 @@ class EmailValidationTest {
         User user = User.builder().email("hola").build();
 
         StepVerifier.create(emailValidation.validate(user))
-                .expectErrorMatches(e -> e instanceof IllegalArgumentException &&
+                .expectErrorMatches(e -> e instanceof UserValidationException &&
                         e.getMessage().contains("El campo email debe tener un formato válido."))
                 .verify();
     }
@@ -72,7 +73,7 @@ class EmailValidationTest {
                 .thenReturn(Mono.just(user));
 
         StepVerifier.create(emailValidation.validate(user))
-                .expectErrorMatches(e -> e instanceof IllegalArgumentException &&
+                .expectErrorMatches(e -> e instanceof UserValidationException &&
                         e.getMessage().contains("El email indicado ya existe, intente con otro."))
                 .verify();
 

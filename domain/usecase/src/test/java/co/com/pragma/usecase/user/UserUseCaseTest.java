@@ -5,6 +5,7 @@ import co.com.pragma.model.role.gateways.RoleRepository;
 import co.com.pragma.model.user.User;
 import co.com.pragma.model.user.gateways.UserRepository;
 import co.com.pragma.usecase.user.user.UserUseCase;
+import co.com.pragma.usecase.user.user.validations.error.UserValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -176,7 +177,7 @@ class UserUseCaseTest {
                 .thenReturn(Mono.just(role));
 
         StepVerifier.create(userUseCase.saveUser(user))
-                .expectErrorMatches(throwable -> throwable instanceof IllegalArgumentException&&
+                .expectErrorMatches(throwable -> throwable instanceof UserValidationException &&
                         throwable.getMessage().equals("El campo email debe tener un formato válido."))
                 .verify();
 
@@ -201,7 +202,7 @@ class UserUseCaseTest {
                 .thenReturn(Mono.empty());
 
         StepVerifier.create(userUseCase.saveUser(user))
-                .expectErrorMatches(throwable -> throwable instanceof IllegalArgumentException &&
+                .expectErrorMatches(throwable -> throwable instanceof UserValidationException &&
                         throwable.getMessage().equals("El Id del rol suministrado no existe."))
                 .verify();
 

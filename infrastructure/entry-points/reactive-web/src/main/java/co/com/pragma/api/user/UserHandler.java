@@ -9,6 +9,7 @@ import co.com.pragma.api.user.dto.validate.ValidateUserRequest;
 import co.com.pragma.model.user.User;
 import co.com.pragma.usecase.user.jwt.JwtUseCaseInterface;
 import co.com.pragma.usecase.user.user.UserUseCaseInterface;
+import co.com.pragma.usecase.user.user.validations.error.UserValidationException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -100,7 +101,7 @@ public class UserHandler {
                             .contentType(MediaType.APPLICATION_JSON)
                             .bodyValue(savedUser);
                 })
-                .onErrorResume(IllegalArgumentException.class, e -> {
+                .onErrorResume(UserValidationException.class, e -> {
                     log.warn("Error al validar los datos del usuario: {}", e.getMessage());
                     Map<String, Object> errorResponse = new HashMap<>();
                     errorResponse.put("status", 400);

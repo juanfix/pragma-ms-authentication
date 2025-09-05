@@ -5,6 +5,7 @@ import co.com.pragma.model.user.User;
 import co.com.pragma.model.user.gateways.UserRepository;
 import co.com.pragma.usecase.user.user.validations.UserValidation;
 import co.com.pragma.usecase.user.user.validations.cases.*;
+import co.com.pragma.usecase.user.user.validations.error.UserValidationException;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -24,7 +25,7 @@ public class UserUseCase implements UserUseCaseInterface {
 
         return userValidation.validate(user)
                 .then(roleRepository.findById(user.getRoleId())
-                        .switchIfEmpty(Mono.error(new IllegalArgumentException("El Id del rol suministrado no existe.")))
+                        .switchIfEmpty(Mono.error(new UserValidationException("El Id del rol suministrado no existe.")))
                         .flatMap(role -> {
                             User userValidated = user;
                             return userRepository.save(userValidated);

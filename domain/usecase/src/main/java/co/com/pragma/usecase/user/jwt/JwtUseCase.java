@@ -1,6 +1,7 @@
 package co.com.pragma.usecase.user.jwt;
 
 import co.com.pragma.model.user.gateways.UserRepository;
+import co.com.pragma.usecase.user.user.validations.error.UserValidationException;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
@@ -22,7 +23,7 @@ public class JwtUseCase implements JwtUseCaseInterface {
                                         }
                                 ).defaultIfEmpty(false);
                     } else {
-                        return Mono.error(new IllegalArgumentException("Invalid token"));
+                        return Mono.error(new UserValidationException("Invalid token"));
                     }
                 });
     }

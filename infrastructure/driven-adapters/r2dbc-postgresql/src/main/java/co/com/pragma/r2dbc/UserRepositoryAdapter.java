@@ -8,9 +8,11 @@ import co.com.pragma.model.user.gateways.AuthRepository;
 import co.com.pragma.model.user.gateways.UserRepository;
 import co.com.pragma.r2dbc.entity.UserEntity;
 import co.com.pragma.r2dbc.helper.ReactiveAdapterOperations;
+import co.com.pragma.usecase.user.user.validations.error.UserValidationException;
 import org.reactivecommons.utils.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -120,6 +122,6 @@ public class UserRepositoryAdapter extends ReactiveAdapterOperations<
                                 return new TokenDTO(jwtProvider.generateToken(userDocument, roleName));
                             })
                 )
-                .switchIfEmpty(Mono.error(new IllegalArgumentException("Bad credentials")))).next();
+                .switchIfEmpty(Mono.error(new UserValidationException("Bad credentials")))).next();
     }
 }
