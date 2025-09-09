@@ -184,7 +184,7 @@ public class UserHandler {
 
         return userUseCase.getUserByIdentityNumber(id)
                 .flatMap(task -> ServerResponse.ok()
-                        .contentType(MediaType.TEXT_EVENT_STREAM)
+                        .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(task))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
