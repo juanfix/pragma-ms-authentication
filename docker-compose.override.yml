@@ -1,0 +1,15 @@
+services:
+  postgres-authentication:
+    ports:
+      - "5433:5432"   # se expone en el puerto 5433
+  ms-authentication:
+    ports:
+      - "8090:8080"   # se expone en el host en 8090
+    environment:
+      POSTGRES_HOST: postgres-authentication
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      APP_SECRET_KEY: ${APP_SECRET_KEY}
+      APP_EXP_TIME: ${APP_EXP_TIME}
