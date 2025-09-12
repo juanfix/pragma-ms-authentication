@@ -8,7 +8,10 @@ import co.com.pragma.api.user.dto.create.CreateUserResponseDTO;
 import co.com.pragma.api.user.dto.validate.ValidateUserRequest;
 import co.com.pragma.model.user.User;
 import co.com.pragma.usecase.user.jwt.JwtUseCaseInterface;
-import co.com.pragma.usecase.user.user.UserUseCaseInterface;
+import co.com.pragma.usecase.user.user.FindUserUseCase;
+import co.com.pragma.usecase.user.user.FindUserUseCaseInterface;
+import co.com.pragma.usecase.user.user.SaveUserUseCaseInterface;
+import co.com.pragma.usecase.user.user.UpdateUserUseCaseInterface;
 import co.com.pragma.usecase.user.user.validations.error.UserValidationException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,7 +38,6 @@ import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 @Component
 @RequiredArgsConstructor
@@ -43,7 +45,9 @@ import java.util.logging.Logger;
 @Tag(name = "User", description = "User endpoints")
 @Slf4j
 public class UserHandler {
-    private final UserUseCaseInterface userUseCase;
+    private final SaveUserUseCaseInterface saveUserUseCaseInterface;
+    private final UpdateUserUseCaseInterface updateUserUseCaseInterface;
+    private final FindUserUseCaseInterface findUserUseCaseInterface;
     private final JwtUseCaseInterface jwtUseCase;
 
     @PostMapping(path = "/api/v1/user", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -93,7 +97,7 @@ public class UserHandler {
     public Mono<ServerResponse> listenSaveUser(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(User.class)
                 .doOnNext(user -> log.info("📥 Se va a resistrar el usuario: {}", user))
-                .flatMap(userUseCase::saveUser)
+                .flatMap(saveUserUseCaseInterface::execute)
                 .doOnNext(savedUser -> log.info("✅ usuario almacenado en la base de datos: {}", savedUser))
                 .flatMap(savedUser -> {
                     URI url = UriComponentsBuilder.fromUriString("/api/v1/user{id}").buildAndExpand(savedUser.getId()).toUri();
@@ -165,7 +169,7 @@ public class UserHandler {
 
     public Mono<ServerResponse> listenUpdateUser(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(User.class)
-                .flatMap(userUseCase::updateUser)
+                .flatMap(updateUserUseCaseInterface::execute)
                 .flatMap(savedUser -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(savedUser));
@@ -176,13 +180,13 @@ public class UserHandler {
                 //.contentType(MediaType.APPLICATION_JSON)
                 //.contentType(MediaType.APPLICATION_NDJSON)
                 .contentType(MediaType.TEXT_EVENT_STREAM)
-                .body(userUseCase.getAllUsers(), Task.class);
+                .body(findUserUseCaseInterface.getAllUsers(), Task.class);
     }
 
     public Mono<ServerResponse> listenGetUserByIdentityNumber(ServerRequest serverRequest) {
         String id = serverRequest.pathVariable("id");
 
-        return userUseCase.getUserByIdentityNumber(id)
+        return findUserUseCaseInterface.getUserByIdentityNumber(id)
                 .flatMap(task -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(task))
