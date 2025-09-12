@@ -11,11 +11,12 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
-public class UserUseCase implements UserUseCaseInterface {
+public class SaveUserUseCase implements SaveUserUseCaseInterface {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
-    public Mono<User> saveUser(User user) {
+    @Override
+    public Mono<User> execute(User user) {
         UserValidation userValidation = new UserValidation()
                 .includeValidation(new NameValidation())
                 .includeValidation(new LastnameValidation())
@@ -31,18 +32,6 @@ public class UserUseCase implements UserUseCaseInterface {
                             return userRepository.save(userValidated);
                         }).log()
                 );
-    }
-
-    public Mono<User> updateUser(User user) {
-        return userRepository.save(user);
-    }
-
-    public Flux<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    public Mono<User> getUserByIdentityNumber(String identityNumber) {
-        return userRepository.findByIdentityNumber(identityNumber);
     }
 
 }
