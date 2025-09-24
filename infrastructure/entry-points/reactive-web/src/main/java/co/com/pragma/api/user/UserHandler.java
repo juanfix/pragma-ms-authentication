@@ -192,4 +192,20 @@ public class UserHandler {
                         .bodyValue(task))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
+
+    @SecurityRequirement(name = "Authorization")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    public Mono<ServerResponse> listenGetAllUserMailList(ServerRequest serverRequest) {
+        String id = serverRequest.pathVariable("id");
+
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                //.contentType(MediaType.APPLICATION_NDJSON)
+                // .contentType(MediaType.TEXT_EVENT_STREAM)
+                .body(findUserUseCaseInterface.getAllUsersMailByRole(Long.parseLong(id)), Task.class)
+                .onErrorResume(e -> {
+                    log.error("Error al consultar la lista de correos", e);
+                    return ServerResponse.status(500).bodyValue("Internal server error: " + e.getMessage());
+                });
+    }
 }
