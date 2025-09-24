@@ -1,5 +1,6 @@
 package co.com.pragma.r2dbc;
 
+import co.com.pragma.jjwtsecurity.jwt.provider.JwtProvider;
 import co.com.pragma.model.user.User;
 import co.com.pragma.r2dbc.entity.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,7 @@ import org.mockito.stubbing.OngoingStubbing;
 import org.reactivecommons.utils.ObjectMapper;
 import org.reactivestreams.Publisher;
 import org.springframework.data.domain.Example;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.reactive.TransactionCallback;
 import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Flux;
@@ -37,6 +39,15 @@ class UserRepositoryAdapterTest {
 
     @Mock
     TransactionalOperator transactionalOperator;
+
+    @Mock
+    PasswordEncoder passwordEncoder;
+
+    @Mock
+    JwtProvider jwtProvider;
+
+    @Mock
+    RoleRepositoryAdapter roleRepositoryAdapter;
 
     private UserRepositoryAdapter adapter;
 
@@ -86,7 +97,7 @@ class UserRepositoryAdapterTest {
 
     @BeforeEach
     void setUp() {
-        adapter = new UserRepositoryAdapter(repository, mapper, transactionalOperator);
+        adapter = new UserRepositoryAdapter(repository, mapper, transactionalOperator, passwordEncoder, jwtProvider, roleRepositoryAdapter);
         when(transactionalOperator.execute(any()))
                 .thenAnswer(invocation -> {
                     @SuppressWarnings("unchecked")

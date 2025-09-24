@@ -1,0 +1,5 @@
+dependencies {
+    implementation 'org.springframework:spring-context:6.1.2'
+    implementation 'io.micrometer:micrometer-core:1.13.0'
+    implementation 'software.amazon.awssdk:metrics-spi:2.25.28'
+}

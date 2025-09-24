@@ -3,6 +3,7 @@ package co.com.pragma.usecase.user.validations;
 import co.com.pragma.model.user.User;
 import co.com.pragma.usecase.user.user.validations.IUserValidation;
 import co.com.pragma.usecase.user.user.validations.UserValidation;
+import co.com.pragma.usecase.user.user.validations.error.UserValidationException;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -32,14 +33,14 @@ class UserValidationTest {
         IUserValidation validationFail = mock(IUserValidation.class);
 
         when(validationSuccess.validate(any())).thenReturn(Mono.empty());
-        when(validationFail.validate(any())).thenReturn(Mono.error(new IllegalArgumentException("Any error message")));
+        when(validationFail.validate(any())).thenReturn(Mono.error(new UserValidationException("Any error message")));
 
         UserValidation userValidation = new UserValidation()
                 .includeValidation(validationSuccess)
                 .includeValidation(validationFail);
 
         StepVerifier.create(userValidation.validate(new User()))
-                .expectErrorMatches(throwable -> throwable instanceof IllegalArgumentException&&
+                .expectErrorMatches(throwable -> throwable instanceof UserValidationException &&
                         throwable.getMessage().equals("Any error message"))
                 .verify();
 

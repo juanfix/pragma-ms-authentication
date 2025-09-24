@@ -1,0 +1,277 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: juan
+      changes:
+        - createTable:
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+
+  - changeSet:
+      id: 2
+      author: juan
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: birth_date
+                  type: DATE
+              - column:
+                  name: address
+                  type: VARCHAR(255)
+              - column:
+                  name: email
+                  type: VARCHAR(150)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: identity_number
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: phone_number
+                  type: VARCHAR(20)
+              - column:
+                  name: base_salary
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role_id
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: users
+            baseColumnNames: role_id
+            constraintName: fk_user_role
+            referencedTableName: role
+            referencedColumnNames: id
+
+  - changeSet:
+      id: 3
+      author: juan
+      changes:
+        - createIndex:
+            tableName: users
+            indexName: idx_user_email
+            unique: true
+            columns:
+              - column:
+                  name: email
+        - createIndex:
+            tableName: users
+            indexName: idx_user_identity_number
+            unique: true
+            columns:
+              - column:
+                  name: identity_number
+        - createIndex:
+            tableName: users
+            indexName: idx_user_role_id
+            columns:
+              - column:
+                  name: role_id
+
+  - changeSet:
+      id: 4
+      author: juan
+      changes:
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 1
+              - column:
+                  name: name
+                  value: ADMIN
+              - column:
+                  name: description
+                  value: Administrador del sistema
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 2
+              - column:
+                  name: name
+                  value: ASESOR
+              - column:
+                  name: description
+                  value: Asesor de la plataforma
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 3
+              - column:
+                  name: name
+                  value: CLIENTE
+              - column:
+                  name: description
+                  value: Cliente de la plataforma
+
+  - changeSet:
+      id: 5
+      author: juan
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+                  defaultValue: password_temporal
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 6
+      author: juan
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 1
+              - column:
+                  name: name
+                  value: Maria
+              - column:
+                  name: last_name
+                  value: Flores
+              - column:
+                  name: birth_date
+                  valueDate: 1990-02-15
+              - column:
+                  name: address
+                  value: "Av 45 # 33-85"
+              - column:
+                  name: email
+                  value: monica@gmail.com
+              - column:
+                  name: identity_number
+                  value: 11161256352
+              - column:
+                  name: phone_number
+                  value: 230753363
+              - column:
+                  name: base_salary
+                  valueNumeric: 3000000
+              - column:
+                  name: role_id
+                  valueNumeric: 1
+              - column:
+                  name: password
+                  value: "$2a$10$nes2AqdXacYr6uTYi5ArqOK7jb9qEy8bsTrEi1/v47n2IsIFtN.Vq"
+
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 2
+              - column:
+                  name: name
+                  value: Juan
+              - column:
+                  name: last_name
+                  value: Ceballos
+              - column:
+                  name: birth_date
+                  valueDate: 1990-02-15
+              - column:
+                  name: address
+                  value: "Av 45 # 33-85"
+              - column:
+                  name: email
+                  value: juan@gmail.com
+              - column:
+                  name: identity_number
+                  value: 11112102632
+              - column:
+                  name: phone_number
+                  value: 230753363
+              - column:
+                  name: base_salary
+                  valueNumeric: 5000000
+              - column:
+                  name: role_id
+                  valueNumeric: 2
+              - column:
+                  name: password
+                  value: "$2a$10$f7PdzFW7g2hnoedPOOsaD.GEZgSYSddhXOp3HCUqiJ/MDEmcqnGfe"
+
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 3
+              - column:
+                  name: name
+                  value: Leidy
+              - column:
+                  name: last_name
+                  value: Ortiz
+              - column:
+                  name: birth_date
+                  valueDate: 1990-02-15
+              - column:
+                  name: address
+                  value: "Av 45 # 33-85"
+              - column:
+                  name: email
+                  value: leidy@gmail.com
+              - column:
+                  name: identity_number
+                  value: 1116125632
+              - column:
+                  name: phone_number
+                  value: 230753363
+              - column:
+                  name: base_salary
+                  valueNumeric: 4000000
+              - column:
+                  name: role_id
+                  valueNumeric: 3
+              - column:
+                  name: password
+                  value: "$2a$10$M97AnwImOp7uUrOCKIJJSOtOspl6ndNO9p7.EqCCr/JZHCM5o013a"
