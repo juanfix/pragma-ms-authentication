@@ -26,3 +26,5 @@ include ':r2dbc-postgresql'
 project(':r2dbc-postgresql').projectDir = file('./infrastructure/driven-adapters/r2dbc-postgresql')
 include ':jjwt-security'
 project(':jjwt-security').projectDir = file('./infrastructure/driven-adapters/jjwt-security')
+include ':metrics'
+project(':metrics').projectDir = file('./infrastructure/helpers/metrics')

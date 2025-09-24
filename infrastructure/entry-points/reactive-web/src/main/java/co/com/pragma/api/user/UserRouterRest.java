@@ -25,6 +25,7 @@ public class UserRouterRest {
                 //.andRoute(POST(globalPath.getGlobal() +"/login"), handler::listenLoginUser)
                 .andRoute(PUT(globalPath.getGlobal() + "/user/{id}"), userHandler::listenUpdateUser)
                 .andRoute(GET(globalPath.getGlobal()+ "/user"), userHandler::listenGetAllUser)
-                .andRoute(GET(globalPath.getGlobal() + "/user/{id}"), userHandler::listenGetUserByIdentityNumber);
+                .andRoute(GET(globalPath.getGlobal() + "/user/{id}"), userHandler::listenGetUserByIdentityNumber)
+                .andRoute(GET(globalPath.getGlobal() + "/user/by-role/{id}"), userHandler::listenGetAllUserMailList);
     }
 }

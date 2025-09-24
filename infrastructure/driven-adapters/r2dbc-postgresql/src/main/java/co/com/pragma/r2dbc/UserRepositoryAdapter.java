@@ -4,6 +4,7 @@ import co.com.pragma.jjwtsecurity.jwt.provider.JwtProvider;
 import co.com.pragma.model.user.User;
 import co.com.pragma.model.user.dto.LoginDTO;
 import co.com.pragma.model.user.dto.TokenDTO;
+import co.com.pragma.model.user.dto.UserMailByRoleDTO;
 import co.com.pragma.model.user.gateways.AuthRepository;
 import co.com.pragma.model.user.gateways.UserRepository;
 import co.com.pragma.r2dbc.entity.UserEntity;
@@ -65,6 +66,17 @@ public class UserRepositoryAdapter extends ReactiveAdapterOperations<
     @Transactional
     public Flux<User> findAll() {
         return transactionalOperator.execute(status -> super.findAll());
+    }
+
+    @Override
+    public Flux<UserMailByRoleDTO> getAllUsersMailByRole(Long id) {
+        User user = new User();
+        user.setRoleId(id);
+
+        return transactionalOperator.transactional(
+                findByExample(user)
+                        .map(u -> new UserMailByRoleDTO(u.getName(), u.getEmail()))
+        );
     }
 
     @Override
